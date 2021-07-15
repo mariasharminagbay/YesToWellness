@@ -1,0 +1,28 @@
+{
+  "name": "yestowellness",
+  "version": "1.0.0",
+  "description": "This will be a platform to address issues of Mental health and how to give ease in navigating the application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariasharminagbay/YesToWellness.git"
+  },
+  "author": "Maria Agbay, Foramben Patel, Chinchu Joseph",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mariasharminagbay/YesToWellness/issues"
+  },
+  "homepage": "https://github.com/mariasharminagbay/YesToWellness#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "hbs": "^4.1.2",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.12",
+    "path": "^0.12.7"
+  }
+}
