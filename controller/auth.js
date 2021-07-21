@@ -21,9 +21,10 @@ exports.login = async (req, res) => {
         }//end of if checking email and password fields if empty
 
         let loggedUser = "";
+        console.log('this is after checking email add and pwd.');
 
         db.query('Select * from tblcustomers where emailAddress = ?', [emailAddress], async (error, results) => {
-            console.log('Password is: ' + bcrypt(results[0].password));
+            console.log('Password is: ' + results[0].password);
             if( !results || !(await bcrypt.compare(password, results[0].password) )) {
                 res.status(401).render('login', {
                     message: 'Password is incorrect.'
@@ -36,8 +37,8 @@ exports.login = async (req, res) => {
                 const islogin = 1;
 
                 console.log("This is userlogin ID: " + id);
-                req.session.customerId = results[0].customerId;
-                req.session.userName = results[0].userName;
+                /* req.session.customerId = id;//results[0].customerId;
+                req.session.userName = loggedUser; //results[0].userName;
 
                 console.log(req.session.customerId);
                 //console.log(req.session.User_Id);
@@ -56,11 +57,11 @@ exports.login = async (req, res) => {
                     httpOnly: true
                 }
 
-                res.cookie('jwt', token, cookieOptions);
+                res.cookie('jwt', token, cookieOptions); */
 
                 return res.status(200).render('index', {
                     
-                    message1: req.session.lastlogin, //logdate,
+                    //message1: req.session.lastlogin, //logdate,
                     message: [loginUser]
                 });
             }
