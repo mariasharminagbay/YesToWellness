@@ -10,15 +10,67 @@ const db = mysql.createConnection({
     database: process.env.DATABASE
 });
 
-exports.register =(req,res) => {
-    console.log(req.body);
-    const {emailAddress, password} = req.body;
+exports.login = async (req, res) => {
+    try {
+        const { emailAddress, password } = req.body;
+      
+        if( !emailAddress || !password ) {
+          return  res.status(400).render('login', {
+              message: 'Please provide an email and password.'
+          })
+        }//end of if checking email and password fields if empty
 
-    db.query('Select emailAddress from tblcustomers where emailAddress =?', [emailAddress], async (error, results) => {
-        if(error) {
-            console.log(error);
-        }
-    }
+        let loggedUser = "";
+
+        db.query('Select * from tblcustomers where emailAddress = ?', [emailAddress], async (error, results) => {
+            console.log('Password is: ' + bcrypt(results[0].password));
+            if( !results || !(await bcrypt.compare(password, results[0].password) )) {
+                res.status(401).render('login', {
+                    message: 'Password is incorrect.'
+                })    
+            } //end of if checking password
+            else {
+                const loginUser = results[0].userName;
+                loggedUser = results[0].userName;
+                const id = results[0].customerId;
+                const islogin = 1;
+
+                console.log("This is userlogin ID: " + id);
+                req.session.customerId = results[0].customerId;
+                req.session.userName = results[0].userName;
+
+                console.log(req.session.customerId);
+                //console.log(req.session.User_Id);
+                
+                const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+                    expiresIn: process.env.JWT_EXPIRES_IN
+                });
+
+                console.log("The token is:" + token);
+
+                const cookieOptions = {
+                    expires: new Date(
+                        Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+                                                                    //hr * min * sec * ms
+                    ),
+                    httpOnly: true
+                }
+
+                res.cookie('jwt', token, cookieOptions);
+
+                return res.status(200).render('index', {
+                    
+                    message1: req.session.lastlogin, //logdate,
+                    message: [loginUser]
+                });
+            }
+        }) //end of dbquery
+
+    }//end of try
+    catch (error) {
+        console.log(error);
+    }//end of catch
+
 }
 
 exports.register = (req, res) => {
